@@ -40,7 +40,7 @@ export class AuthService {
       },
     })
 
-    const tokens = await this.getTokens(user.id, user.email)
+    const tokens = await this.getTokens(user.id, user.email, user.name)
     await this.updateRefreshTokenHash(user.id, tokens.refreshToken)
     return tokens
   }
@@ -54,7 +54,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials')
     }
 
-    const tokens = await this.getTokens(user.id, user.email)
+    const tokens = await this.getTokens(user.id, user.email, user.name)
     await this.updateRefreshTokenHash(user.id, tokens.refreshToken)
     return tokens
   }
@@ -96,11 +96,15 @@ export class AuthService {
     })
   }
 
-  private async getTokens(userId: number, email: string): Promise<Tokens> {
+  private async getTokens(
+    userId: number,
+    email: string,
+    name: string
+  ): Promise<Tokens> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
-        { sub: userId, email },
-        { secret: process.env.JWT_ACCESS_SECRET, expiresIn: '15m' } // Secret para Access Token
+        { sub: userId, email, name },
+        { secret: process.env.JWT_ACCESS_SECRET, expiresIn: '1y' } // Secret para Access Token
       ),
       this.jwtService.signAsync(
         { sub: userId, email },

@@ -7,7 +7,6 @@ import {
   StyleSheet,
   StatusBar,
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
@@ -15,10 +14,10 @@ import { useRouter } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { CreateUserDto } from '@shared/types/user.types'
-import { signUp, signIn } from '../services/authService'
-
+import { useSession } from '@/context/ctx'
 export default function AuthScreen() {
   const router = useRouter()
+  const session = useSession()
 
   const [isLoginView, setIsLoginView] = useState(true)
   const [email, setEmail] = useState('')
@@ -42,13 +41,8 @@ export default function AuthScreen() {
     }
 
     try {
-      await signUp(userData)
-      Alert.alert(
-        '¡Éxito!',
-        'Usuario registrado correctamente. Ahora inicia sesión.'
-      )
-      setIsLoginView(true)
-      setPassword('')
+      await session.signUp(userData)
+      await session.signIn(email, password)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -65,7 +59,7 @@ export default function AuthScreen() {
     setError(null)
 
     try {
-      const { accessToken, refreshToken } = await signIn(email, password)
+      await session.signIn(email, password)
       router.replace('/')
     } catch (err: any) {
       setError(err.message)

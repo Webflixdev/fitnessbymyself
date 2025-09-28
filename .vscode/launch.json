@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "radon-ide",
+            "request": "launch",
+            "name": "Radon IDE panel",
+            "env": {},
+            "nodePath": "/Users/raulfernandoavilessaltos/.nvm/versions/node/v22.20.0/bin/node", // ¡REEMPLAZA ESTO con tu ruta real!
+            "ios": {
+                "configuration": "Debug"
+            },
+            "android": {
+                "buildType": "debug"
+            }
+        }
+    ]
+}

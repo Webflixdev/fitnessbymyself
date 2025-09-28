@@ -1,28 +1,33 @@
-import { Stack } from 'expo-router'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { SessionProvider, useSession } from '../context/ctx'
+import { Stack, SplashScreen } from 'expo-router'
+import { SplashScreenController } from '../context/splash'
 
-export default function RootLayout() {
+export default function Root() {
+  SplashScreen.preventAutoHideAsync()
   return (
-    <SafeAreaProvider>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#f4511e',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
-      >
-        <Stack.Screen
-          name="index"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen name="details" />
-      </Stack>
-    </SafeAreaProvider>
+    <SessionProvider>
+      <SplashScreenController />
+      <RootNavigator />
+    </SessionProvider>
+  )
+}
+
+function RootNavigator() {
+  const { session } = useSession()
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Protected guard={!!session}>
+        <Stack.Screen name="(app)" />
+      </Stack.Protected>
+
+      <Stack.Protected guard={!session}>
+        <Stack.Screen name="sign-in" />
+      </Stack.Protected>
+    </Stack>
   )
 }

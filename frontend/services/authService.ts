@@ -45,9 +45,31 @@ export const signUp = async (userData: CreateUserDto) => {
   }
 }
 
+export const signOut = async (accessToken: string) => {
+  try {
+    const response = await fetch(`${API_URL}/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    const data = await response.json()
+    if (!response.ok) {
+      throw new Error(data.message || 'Error cerrando sessión')
+    }
+
+    return data
+  } catch (error) {
+    throw error
+  }
+}
+
 const authService = {
   signIn,
   signUp,
+  signOut,
 }
 
 export default authService
