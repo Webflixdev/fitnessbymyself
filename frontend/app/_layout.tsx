@@ -1,6 +1,7 @@
 import { SessionProvider, useSession } from '../context/ctx'
 import { Stack, SplashScreen } from 'expo-router'
 import { SplashScreenController } from '../context/splash'
+import '../global.css'
 
 export default function Root() {
   SplashScreen.preventAutoHideAsync()
