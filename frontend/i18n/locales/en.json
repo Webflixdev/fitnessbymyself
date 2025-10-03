@@ -1,0 +1,62 @@
+{
+  "welcome": {
+    "title": "Brace Yourself\nfor What's Next",
+    "signUpFree": "Sign up free",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "logIn": "Log in"
+  },
+  "signIn": {
+    "title": "Log in",
+    "welcomeBack": "Welcome back!",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "continue": "Continue",
+    "dontHaveAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "emailRequired": "Email and password are required.",
+    "close": "Close"
+  },
+  "signUp": {
+    "title": "Create Account",
+    "whatsYourName": "What's your name?",
+    "firstName": "First Name",
+    "email": "Email",
+    "password": "Password",
+    "continue": "Continue",
+    "alreadyHaveAccount": "Already have an account?",
+    "logIn": "Log in",
+    "allFieldsRequired": "All fields are required."
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "whatsYourEmail": "What's your email?",
+    "email": "Email",
+    "submit": "Submit",
+    "emailRequired": "Email is required.",
+    "codeSent": "We've sent you a reset code. Enter it below:",
+    "cancel": "Cancel",
+    "back": "Back",
+    "enterCode": "Enter Code",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "resetPassword": "Reset Password",
+    "allFieldsRequired": "All fields are required.",
+    "passwordsDoNotMatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "error": "An error occurred. Please try again.",
+    "invalidCode": "Invalid or expired code.",
+    "passwordResetSuccess": "Your password has been reset successfully!"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "next": "Next",
+    "back": "Back",
+    "save": "Save"
+  }
+}

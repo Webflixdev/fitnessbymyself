@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common'
 import type { Request } from 'express'
 import { AuthService } from './auth.service'
-import { SignUpDto, SignInDto } from './dto'
+import { SignUpDto, SignInDto, ForgotPasswordDto, ResetPasswordDto, VerifyResetCodeDto } from './dto'
 import { AuthGuard } from '@nestjs/passport'
 
 @Controller('auth')
@@ -62,5 +62,23 @@ export class AuthController {
     // El Guard 'jwt-refresh' añade el objeto 'user' con el refreshToken a la request
     const user = req.user as { sub: number; refreshToken: string }
     return this.authService.refreshTokens(user.sub, user.refreshToken)
+  }
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto)
+  }
+
+  @Post('verify-reset-code')
+  @HttpCode(HttpStatus.OK)
+  verifyResetCode(@Body() verifyResetCodeDto: VerifyResetCodeDto) {
+    return this.authService.verifyResetCode(verifyResetCodeDto)
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto)
   }
 }

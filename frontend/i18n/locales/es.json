@@ -1,0 +1,62 @@
+{
+  "welcome": {
+    "title": "Prepárate para\nlo que Viene",
+    "signUpFree": "Regístrate gratis",
+    "continueWithGoogle": "Continuar con Google",
+    "continueWithApple": "Continuar con Apple",
+    "logIn": "Iniciar sesión"
+  },
+  "signIn": {
+    "title": "Iniciar sesión",
+    "welcomeBack": "¡Bienvenido de nuevo!",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "continue": "Continuar",
+    "dontHaveAccount": "¿No tienes una cuenta?",
+    "signUp": "Regístrate",
+    "emailRequired": "El correo y la contraseña son obligatorios.",
+    "close": "Cerrar"
+  },
+  "signUp": {
+    "title": "Crear Cuenta",
+    "whatsYourName": "¿Cuál es tu nombre?",
+    "firstName": "Nombre",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "continue": "Continuar",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "logIn": "Iniciar sesión",
+    "allFieldsRequired": "Todos los campos son obligatorios."
+  },
+  "forgotPassword": {
+    "title": "Recuperar Contraseña",
+    "whatsYourEmail": "¿Cuál es tu correo?",
+    "email": "Correo electrónico",
+    "submit": "Enviar",
+    "emailRequired": "El correo es obligatorio.",
+    "codeSent": "Te hemos enviado un código de recuperación. Ingrésalo a continuación:",
+    "cancel": "Cancelar",
+    "back": "Atrás",
+    "enterCode": "Ingresa el Código",
+    "newPassword": "Nueva Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "resetPassword": "Restablecer Contraseña",
+    "allFieldsRequired": "Todos los campos son obligatorios.",
+    "passwordsDoNotMatch": "Las contraseñas no coinciden.",
+    "passwordTooShort": "La contraseña debe tener al menos 8 caracteres.",
+    "error": "Ocurrió un error. Inténtalo de nuevo.",
+    "invalidCode": "Código inválido o expirado.",
+    "passwordResetSuccess": "¡Tu contraseña ha sido restablecida exitosamente!"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "save": "Guardar"
+  }
+}

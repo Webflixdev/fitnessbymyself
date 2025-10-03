@@ -1,75 +1,43 @@
 import { CreateUserDto } from '@shared/types/user.types'
-
-const API_URL = `${process.env.EXPO_PUBLIC_API_URL}/auth`
+import api from './api'
 
 export const signIn = async (email: string, password: string) => {
-  try {
-    const response = await fetch(`${API_URL}/signin`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Error en el inicio de sesión')
-    }
-    return data
-  } catch (error) {
-    throw error
-  }
+  const response = await api.post('/auth/signin', { email, password })
+  return response.data
 }
 
 export const signUp = async (userData: CreateUserDto) => {
-  try {
-    const response = await fetch(`${API_URL}/signup`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Error al registrar el usuario')
-    }
-
-    return data
-  } catch (error) {
-    throw error
-  }
+  const response = await api.post('/auth/signup', userData)
+  return response.data
 }
 
-export const signOut = async (accessToken: string) => {
-  try {
-    const response = await fetch(`${API_URL}/logout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
+export const signOut = async () => {
+  const response = await api.post('/auth/logout')
+  return response.data
+}
 
-    const data = await response.json()
-    if (!response.ok) {
-      throw new Error(data.message || 'Error cerrando sessión')
-    }
+export const forgotPassword = async (email: string) => {
+  const response = await api.post('/auth/forgot-password', { email })
+  return response.data
+}
 
-    return data
-  } catch (error) {
-    throw error
-  }
+export const verifyResetCode = async (email: string, code: string) => {
+  const response = await api.post('/auth/verify-reset-code', { email, code })
+  return response.data
+}
+
+export const resetPassword = async (email: string, code: string, newPassword: string) => {
+  const response = await api.post('/auth/reset-password', { email, code, newPassword })
+  return response.data
 }
 
 const authService = {
   signIn,
   signUp,
   signOut,
+  forgotPassword,
+  verifyResetCode,
+  resetPassword,
 }
 
 export default authService

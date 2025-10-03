@@ -1,15 +1,22 @@
 import { SplashScreen } from 'expo-router'
 import { useSession } from './ctx'
 import { useEffect } from 'react'
+SplashScreen.preventAutoHideAsync()
 
-export function SplashScreenController() {
+interface SplashScreenControllerProps {
+  fontsLoaded: boolean
+}
+
+export function SplashScreenController({
+  fontsLoaded,
+}: SplashScreenControllerProps) {
   const { isLoading } = useSession()
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && fontsLoaded) {
       SplashScreen.hideAsync()
     }
-  }, [isLoading])
+  }, [isLoading, fontsLoaded])
 
   return null
 }
