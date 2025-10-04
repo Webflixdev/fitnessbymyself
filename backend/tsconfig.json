@@ -22,7 +22,8 @@
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@shared/*": ["../shared/src/*"] 
+      "@shared/*": ["../shared/src/*"],
     }
+    
   }
 }

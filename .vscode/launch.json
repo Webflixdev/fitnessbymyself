@@ -2,9 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Radon IDE panel",
             "type": "radon-ide",
             "request": "launch",
-            "name": "Radon IDE panel",
+            "appRoot": "./frontend",
             "env": {
                 "PATH": "/Users/raulfernandoavilessaltos/.nvm/versions/node/v22.20.0/bin:${env:PATH}"
             },
@@ -13,7 +14,8 @@
             },
             "android": {
                 "buildType": "debug"
-            }
+            },
+            "usePrebuild": true
         }
     ]
 }

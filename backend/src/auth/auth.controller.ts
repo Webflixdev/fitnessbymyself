@@ -9,10 +9,16 @@ import {
 } from '@nestjs/common'
 import type { Request } from 'express'
 import { AuthService } from './auth.service'
-import { SignUpDto, SignInDto, ForgotPasswordDto, ResetPasswordDto, VerifyResetCodeDto } from './dto'
+import {
+  SignUpDto,
+  SignInDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+  VerifyResetCodeDto,
+} from './dto'
 import { AuthGuard } from '@nestjs/passport'
 import { I18nLang } from 'nestjs-i18n'
-import { Language } from '@shared/enums'
+import { Language } from '@shared/enums/language.enum'
 
 @Controller('auth')
 export class AuthController {
@@ -68,19 +74,28 @@ export class AuthController {
 
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
-  forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto, @I18nLang() lang: Language) {
+  forgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+    @I18nLang() lang: Language
+  ) {
     return this.authService.forgotPassword(forgotPasswordDto, lang)
   }
 
   @Post('verify-reset-code')
   @HttpCode(HttpStatus.OK)
-  verifyResetCode(@Body() verifyResetCodeDto: VerifyResetCodeDto, @I18nLang() lang: Language) {
+  verifyResetCode(
+    @Body() verifyResetCodeDto: VerifyResetCodeDto,
+    @I18nLang() lang: Language
+  ) {
     return this.authService.verifyResetCode(verifyResetCodeDto, lang)
   }
 
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
-  resetPassword(@Body() resetPasswordDto: ResetPasswordDto, @I18nLang() lang: Language) {
+  resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @I18nLang() lang: Language
+  ) {
     return this.authService.resetPassword(resetPasswordDto, lang)
   }
 }
