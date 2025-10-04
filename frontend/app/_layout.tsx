@@ -2,6 +2,7 @@ import { SessionProvider, useSession } from '../context/ctx'
 import { Stack } from 'expo-router'
 import { SplashScreenController } from '../context/splash'
 import * as Font from 'expo-font'
+import { ROUTES } from '../constants/routes'
 import '../global.css'
 import '../i18n/config'
 
@@ -33,9 +34,9 @@ function RootNavigator() {
       </Stack.Protected>
 
       <Stack.Protected guard={!session}>
-        <Stack.Screen name="welcome" />
+        <Stack.Screen name={ROUTES.WELCOME.name} />
         <Stack.Screen
-          name="sign-in"
+          name={ROUTES.SIGN_IN.name}
           options={{
             presentation: 'modal',
             gestureEnabled: true,
@@ -43,7 +44,7 @@ function RootNavigator() {
           }}
         />
         <Stack.Screen
-          name="sign-up"
+          name={ROUTES.SIGN_UP.name}
           options={{
             presentation: 'modal',
             gestureEnabled: true,
@@ -51,7 +52,7 @@ function RootNavigator() {
           }}
         />
         <Stack.Screen
-          name="forgot-password"
+          name={ROUTES.FORGOT_PASSWORD.name}
           options={{
             presentation: 'modal',
             gestureEnabled: true,

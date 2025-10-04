@@ -1,13 +1,21 @@
-// backend/src/auth/auth.service.ts
 import {
   Injectable,
   UnauthorizedException,
   ForbiddenException,
 } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
-import { SignUpDto, SignInDto, ForgotPasswordDto, ResetPasswordDto, VerifyResetCodeDto } from './dto'
+import {
+  SignUpDto,
+  SignInDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+  VerifyResetCodeDto,
+} from './dto'
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
+import { EmailService } from '../email/email.service'
+import { I18nService } from 'nestjs-i18n'
+import { Language } from '@shared/enums/language.enum'
 
 type Tokens = {
   accessToken: string
@@ -22,15 +30,19 @@ const RESET_CODE_MAX = 999999
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
+    private readonly i18n: I18nService
   ) {}
 
-  async signUp(dto: SignUpDto): Promise<Tokens> {
+  async signUp(dto: SignUpDto, lang: Language = Language.EN): Promise<Tokens> {
     const { email, password, name } = dto
 
     const userExists = await this.prisma.user.findUnique({ where: { email } })
     if (userExists) {
-      throw new ForbiddenException('Credentials taken')
+      throw new ForbiddenException(
+        this.i18n.t('auth.credentials_taken', { lang })
+      )
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -48,13 +60,15 @@ export class AuthService {
     return tokens
   }
 
-  async signIn(dto: SignInDto): Promise<Tokens> {
+  async signIn(dto: SignInDto, lang: Language = Language.EN): Promise<Tokens> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     })
 
     if (!user || !(await bcrypt.compare(dto.password, user.password))) {
-      throw new UnauthorizedException('Invalid credentials')
+      throw new UnauthorizedException(
+        this.i18n.t('auth.invalid_credentials', { lang })
+      )
     }
 
     const tokens = await this.getTokens(user.id, user.email, user.name)
@@ -78,28 +92,43 @@ export class AuthService {
     return true
   }
 
-  async refreshTokens(userId: number, rt: string): Promise<Tokens> {
+  async refreshTokens(
+    userId: number,
+    rt: string,
+    lang: Language = Language.EN
+  ): Promise<Tokens> {
     const user = await this.prisma.user.findUnique({ where: { id: userId } })
-    if (!user || !user.hashedRt) throw new ForbiddenException('Access Denied')
+    if (!user || !user.hashedRt) {
+      throw new ForbiddenException(this.i18n.t('auth.access_denied', { lang }))
+    }
 
     const rtMatches = await bcrypt.compare(rt, user.hashedRt)
-    if (!rtMatches) throw new ForbiddenException('Access Denied')
+    if (!rtMatches) {
+      throw new ForbiddenException(this.i18n.t('auth.access_denied', { lang }))
+    }
 
     const tokens = await this.getTokens(user.id, user.email, user.name)
     await this.updateRefreshTokenHash(user.id, tokens.refreshToken)
     return tokens
   }
 
-  async forgotPassword(dto: ForgotPasswordDto): Promise<{ message: string }> {
+  async forgotPassword(
+    dto: ForgotPasswordDto,
+    lang: Language = Language.EN
+  ): Promise<{ message: string }> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     })
 
     if (!user) {
-      return { message: 'If the email exists, a reset code has been sent' }
+      return {
+        message: this.i18n.t('auth.reset_code_sent', { lang }),
+      }
     }
 
-    const resetCode = Math.floor(RESET_CODE_MIN + Math.random() * (RESET_CODE_MAX - RESET_CODE_MIN)).toString()
+    const resetCode = Math.floor(
+      RESET_CODE_MIN + Math.random() * (RESET_CODE_MAX - RESET_CODE_MIN)
+    ).toString()
     const expiresAt = new Date(Date.now() + RESET_CODE_EXPIRATION_MS)
 
     await this.prisma.user.update({
@@ -110,46 +139,72 @@ export class AuthService {
       },
     })
 
-    console.log(`Reset code for ${dto.email}: ${resetCode}`)
+    // Enviar email con el código de recuperación
+    try {
+      await this.emailService.sendPasswordResetCode(dto.email, resetCode, lang)
+    } catch (error) {
+      console.error('Error sending reset email:', error)
+      // No revelamos el error al cliente por seguridad
+    }
 
-    return { message: 'If the email exists, a reset code has been sent' }
+    return {
+      message: this.i18n.t('auth.reset_code_sent', { lang }),
+    }
   }
 
-  async verifyResetCode(dto: VerifyResetCodeDto): Promise<{ valid: boolean }> {
+  async verifyResetCode(
+    dto: VerifyResetCodeDto,
+    lang: Language = Language.EN
+  ): Promise<{ valid: boolean }> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     })
 
     if (!user || !user.resetPasswordToken || !user.resetPasswordExpires) {
-      throw new UnauthorizedException('Invalid or expired reset code')
+      throw new UnauthorizedException(
+        this.i18n.t('auth.invalid_or_expired_code', { lang })
+      )
     }
 
     if (user.resetPasswordExpires < new Date()) {
-      throw new UnauthorizedException('Reset code has expired')
+      throw new UnauthorizedException(
+        this.i18n.t('auth.reset_code_expired', { lang })
+      )
     }
 
     if (user.resetPasswordToken !== dto.code) {
-      throw new UnauthorizedException('Invalid reset code')
+      throw new UnauthorizedException(
+        this.i18n.t('auth.invalid_reset_code', { lang })
+      )
     }
 
     return { valid: true }
   }
 
-  async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
+  async resetPassword(
+    dto: ResetPasswordDto,
+    lang: Language = Language.EN
+  ): Promise<{ message: string }> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     })
 
     if (!user || !user.resetPasswordToken || !user.resetPasswordExpires) {
-      throw new UnauthorizedException('Invalid or expired reset code')
+      throw new UnauthorizedException(
+        this.i18n.t('auth.invalid_or_expired_code', { lang })
+      )
     }
 
     if (user.resetPasswordExpires < new Date()) {
-      throw new UnauthorizedException('Reset code has expired')
+      throw new UnauthorizedException(
+        this.i18n.t('auth.reset_code_expired', { lang })
+      )
     }
 
     if (user.resetPasswordToken !== dto.code) {
-      throw new UnauthorizedException('Invalid reset code')
+      throw new UnauthorizedException(
+        this.i18n.t('auth.invalid_reset_code', { lang })
+      )
     }
 
     const hashedPassword = await bcrypt.hash(dto.newPassword, 10)
@@ -163,7 +218,9 @@ export class AuthService {
       },
     })
 
-    return { message: 'Password has been reset successfully' }
+    return {
+      message: this.i18n.t('auth.password_reset_success', { lang }),
+    }
   }
 
   // --- Helpers ---

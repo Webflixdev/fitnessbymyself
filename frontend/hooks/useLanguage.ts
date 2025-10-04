@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { storage, LANGUAGE_STORAGE_KEY } from '@/i18n/config'
 
-export type Language = 'en' | 'es'
+export enum Language {
+  EN = 'en',
+  ES = 'es',
+}
 
-const LANGUAGE_STORAGE_KEY = 'app_language'
+export type LanguageCode = `${Language}`
 
 export const useLanguage = () => {
   const { i18n } = useTranslation()
@@ -11,7 +14,7 @@ export const useLanguage = () => {
   const changeLanguage = async (lang: Language) => {
     try {
       await i18n.changeLanguage(lang)
-      await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang)
+      await storage.setItem(LANGUAGE_STORAGE_KEY, lang)
     } catch (error) {
       console.error('Error changing language:', error)
     }
@@ -22,7 +25,7 @@ export const useLanguage = () => {
   return {
     currentLanguage,
     changeLanguage,
-    isEnglish: currentLanguage === 'en',
-    isSpanish: currentLanguage === 'es',
+    isEnglish: currentLanguage === Language.EN,
+    isSpanish: currentLanguage === Language.ES,
   }
 }

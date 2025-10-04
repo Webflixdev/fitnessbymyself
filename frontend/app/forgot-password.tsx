@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, Text, Alert } from 'react-native'
 import { useRouter } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -7,8 +7,13 @@ import BaseButton from '@/components/BaseButton'
 import BaseInput from '@/components/BaseInput'
 import BaseModalHeader from '@/components/BaseModalHeader'
 import BaseKeyboardAvoidingView from '@/components/BaseKeyboardAvoidingView'
+import BaseLogo from '@/components/BaseLogo'
 import { ROUTES } from '@/constants/routes'
-import { forgotPassword, verifyResetCode, resetPassword } from '@/services/authService'
+import {
+  forgotPassword,
+  verifyResetCode,
+  resetPassword,
+} from '@/services/authService'
 import { useSession } from '@/context/ctx'
 
 export default function ForgotPasswordScreen() {
@@ -70,7 +75,10 @@ export default function ForgotPasswordScreen() {
       setCode(inputCode)
       setStep('password')
     } catch (err: any) {
-      Alert.alert(t('common.error'), err.response?.data?.message || t('forgotPassword.invalidCode'))
+      Alert.alert(
+        t('common.error'),
+        err.response?.data?.message || t('forgotPassword.invalidCode')
+      )
     } finally {
       setLoading(false)
     }
@@ -98,11 +106,17 @@ export default function ForgotPasswordScreen() {
     try {
       await resetPassword(email, code, newPassword)
       await session.signIn(email, newPassword)
-      Alert.alert(t('common.success'), t('forgotPassword.passwordResetSuccess'), [
-        { text: 'OK', onPress: () => router.replace(ROUTES.HOME) },
-      ])
+      Alert.alert(
+        t('common.success'),
+        t('forgotPassword.passwordResetSuccess'),
+        [{ text: 'OK', onPress: () => router.replace(ROUTES.HOME.path) }]
+      )
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || t('forgotPassword.invalidCode'))
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          t('forgotPassword.invalidCode')
+      )
     } finally {
       setLoading(false)
     }
@@ -130,9 +144,7 @@ export default function ForgotPasswordScreen() {
 
       <BaseKeyboardAvoidingView>
         <View className="items-center mb-8">
-          <View className="w-16 h-16 bg-sky-400 rounded-2xl items-center justify-center mb-6">
-            <Text className="text-white text-3xl font-bold">F</Text>
-          </View>
+          <BaseLogo className="mb-6" />
           <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {step === 'email'
               ? t('forgotPassword.whatsYourEmail')

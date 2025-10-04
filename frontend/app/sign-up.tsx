@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { useRouter } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -9,6 +9,7 @@ import BaseButton from '@/components/BaseButton'
 import BaseInput from '@/components/BaseInput'
 import BaseModalHeader from '@/components/BaseModalHeader'
 import BaseKeyboardAvoidingView from '@/components/BaseKeyboardAvoidingView'
+import BaseLogo from '@/components/BaseLogo'
 import { ROUTES } from '@/constants/routes'
 
 export default function SignUpScreen() {
@@ -39,7 +40,7 @@ export default function SignUpScreen() {
     try {
       await session.signUp(userData)
       await session.signIn(email, password)
-      router.replace(ROUTES.HOME)
+      router.replace(ROUTES.HOME.path)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -53,16 +54,11 @@ export default function SignUpScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-950">
-      <BaseModalHeader
-        title={t('signUp.title')}
-        onBackPress={handleClose}
-      />
+      <BaseModalHeader title={t('signUp.title')} onBackPress={handleClose} />
 
       <BaseKeyboardAvoidingView>
         <View className="items-center mb-8">
-          <View className="w-16 h-16 bg-sky-400 rounded-2xl items-center justify-center mb-6">
-            <Text className="text-white text-3xl font-bold">F</Text>
-          </View>
+          <BaseLogo className="mb-6" />
           <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {t('signUp.whatsYourName')}
           </Text>
@@ -105,12 +101,14 @@ export default function SignUpScreen() {
         />
 
         <TouchableOpacity
-          onPress={() => router.push(ROUTES.SIGN_IN)}
+          onPress={() => router.push(ROUTES.SIGN_IN.path)}
           className="mt-6"
         >
           <Text className="text-center text-gray-600 dark:text-gray-400">
             {t('signUp.alreadyHaveAccount')}{' '}
-            <Text className="text-sky-400 font-semibold">{t('signUp.logIn')}</Text>
+            <Text className="text-sky-400 font-semibold">
+              {t('signUp.logIn')}
+            </Text>
           </Text>
         </TouchableOpacity>
       </BaseKeyboardAvoidingView>

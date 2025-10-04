@@ -11,6 +11,8 @@ import type { Request } from 'express'
 import { AuthService } from './auth.service'
 import { SignUpDto, SignInDto, ForgotPasswordDto, ResetPasswordDto, VerifyResetCodeDto } from './dto'
 import { AuthGuard } from '@nestjs/passport'
+import { I18nLang } from 'nestjs-i18n'
+import { Language } from '@shared/enums'
 
 @Controller('auth')
 export class AuthController {
@@ -23,8 +25,8 @@ export class AuthController {
    */
   @Post('signup')
   @HttpCode(HttpStatus.CREATED) // Devuelve un 201 en lugar de 200 por defecto
-  signUp(@Body() signUpDto: SignUpDto) {
-    return this.authService.signUp(signUpDto)
+  signUp(@Body() signUpDto: SignUpDto, @I18nLang() lang: Language) {
+    return this.authService.signUp(signUpDto, lang)
   }
 
   /**
@@ -34,8 +36,8 @@ export class AuthController {
    */
   @Post('signin')
   @HttpCode(HttpStatus.OK)
-  signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto)
+  signIn(@Body() signInDto: SignInDto, @I18nLang() lang: Language) {
+    return this.authService.signIn(signInDto, lang)
   }
 
   /**
@@ -58,27 +60,27 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt-refresh')) // 🛡️ Protegido con el Guard del refreshToken
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  refreshTokens(@Req() req: Request) {
+  refreshTokens(@Req() req: Request, @I18nLang() lang: Language) {
     // El Guard 'jwt-refresh' añade el objeto 'user' con el refreshToken a la request
     const user = req.user as { sub: number; refreshToken: string }
-    return this.authService.refreshTokens(user.sub, user.refreshToken)
+    return this.authService.refreshTokens(user.sub, user.refreshToken, lang)
   }
 
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
-  forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
-    return this.authService.forgotPassword(forgotPasswordDto)
+  forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto, @I18nLang() lang: Language) {
+    return this.authService.forgotPassword(forgotPasswordDto, lang)
   }
 
   @Post('verify-reset-code')
   @HttpCode(HttpStatus.OK)
-  verifyResetCode(@Body() verifyResetCodeDto: VerifyResetCodeDto) {
-    return this.authService.verifyResetCode(verifyResetCodeDto)
+  verifyResetCode(@Body() verifyResetCodeDto: VerifyResetCodeDto, @I18nLang() lang: Language) {
+    return this.authService.verifyResetCode(verifyResetCodeDto, lang)
   }
 
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
-  resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    return this.authService.resetPassword(resetPasswordDto)
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto, @I18nLang() lang: Language) {
+    return this.authService.resetPassword(resetPasswordDto, lang)
   }
 }

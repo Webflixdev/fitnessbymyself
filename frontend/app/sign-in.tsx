@@ -8,6 +8,7 @@ import BaseButton from '@/components/BaseButton'
 import BaseInput from '@/components/BaseInput'
 import BaseModalHeader from '@/components/BaseModalHeader'
 import BaseKeyboardAvoidingView from '@/components/BaseKeyboardAvoidingView'
+import BaseLogo from '@/components/BaseLogo'
 import { ROUTES } from '@/constants/routes'
 
 export default function SignInScreen() {
@@ -30,7 +31,7 @@ export default function SignInScreen() {
 
     try {
       await session.signIn(email, password)
-      router.replace(ROUTES.HOME)
+      router.replace(ROUTES.HOME.path)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -58,9 +59,7 @@ export default function SignInScreen() {
 
       <BaseKeyboardAvoidingView>
         <View className="items-center mb-8">
-          <View className="w-16 h-16 bg-sky-400 rounded-2xl items-center justify-center mb-6">
-            <Text className="text-white text-3xl font-bold">F</Text>
-          </View>
+          <BaseLogo className="mb-6" />
           <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {t('signIn.welcomeBack')}
           </Text>
@@ -86,7 +85,7 @@ export default function SignInScreen() {
 
         <TouchableOpacity
           className="mt-4"
-          onPress={() => router.push(ROUTES.FORGOT_PASSWORD)}
+          onPress={() => router.push(ROUTES.FORGOT_PASSWORD.path)}
         >
           <Text className="text-sky-400 text-sm">
             {t('signIn.forgotPassword')}
@@ -106,7 +105,7 @@ export default function SignInScreen() {
         />
 
         <TouchableOpacity
-          onPress={() => router.push(ROUTES.SIGN_UP)}
+          onPress={() => router.push(ROUTES.SIGN_UP.path)}
           className="mt-6"
         >
           <Text className="text-center text-gray-600 dark:text-gray-400">

@@ -57,6 +57,11 @@
     "confirm": "Confirmar",
     "next": "Siguiente",
     "back": "Atrás",
-    "save": "Guardar"
+    "save": "Guardar",
+    "selectLanguage": "Seleccionar Idioma"
+  },
+  "errors": {
+    "noResponse": "Sin respuesta del servidor. Por favor verifica tu conexión.",
+    "unexpected": "Ocurrió un error inesperado"
   }
 }

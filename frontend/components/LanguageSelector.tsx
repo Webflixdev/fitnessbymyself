@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, TouchableOpacity, Text, Modal } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useLanguage, Language } from '@/hooks/useLanguage'
+import { useTranslation } from 'react-i18next'
+import { useLanguage } from '@/hooks/useLanguage'
+import { Language } from '@shared/enums/language.enum'
 
-const LANGUAGES: Array<{ code: Language; name: string; flag: string }> = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
+const LANGUAGES: { code: Language; name: string; flag: string }[] = [
+  { code: Language.EN, name: 'English', flag: '🇺🇸' },
+  { code: Language.ES, name: 'Español', flag: '🇪🇸' },
 ]
 
 export default function LanguageSelector() {
+  const { t } = useTranslation()
   const { currentLanguage, changeLanguage } = useLanguage()
   const [modalVisible, setModalVisible] = useState(false)
 
@@ -16,8 +19,6 @@ export default function LanguageSelector() {
     changeLanguage(lang)
     setModalVisible(false)
   }
-
-  const currentLangData = LANGUAGES.find(l => l.code === currentLanguage)
 
   return (
     <View>
@@ -45,10 +46,10 @@ export default function LanguageSelector() {
             onStartShouldSetResponder={() => true}
           >
             <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
-              Select Language
+              {t('common.selectLanguage')}
             </Text>
 
-            {LANGUAGES.map((lang) => (
+            {LANGUAGES.map(lang => (
               <TouchableOpacity
                 key={lang.code}
                 onPress={() => handleLanguageSelect(lang.code)}

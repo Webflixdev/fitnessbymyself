@@ -1,7 +1,0 @@
-export const SIGNIN_ROUTE = '/signin'
-export const WELCOME_ROUTE = '/'
-export const PROFILE_ROUTE = '/(app)/profile'
-export const SETTINGS_ROUTE = '/(app)/profile/settings'
-export const WORKOUTS_ROUTE = '/(app)/workouts'
-export const WORKOUT_DETAIL_ROUTE = '/(app)/workout/[id]'
-export const EXERCISE_DETAIL_ROUTE = '/(app)/exercise/[id]'
