@@ -16,11 +16,20 @@ import {
 } from '@/services/authService'
 import { useSession } from '@/context/ctx'
 
+const STEPS = {
+  EMAIL: 'email',
+  PASSWORD: 'password',
+} as const
+
+const PASSWORD_MIN_LENGTH = 8
+const ALERT_PROMPT_TYPE = 'plain-text'
+const ALERT_KEYBOARD_TYPE = 'numeric'
+
 export default function ForgotPasswordScreen() {
   const router = useRouter()
   const session = useSession()
   const { t } = useTranslation()
-  const [step, setStep] = useState<'email' | 'password'>('email')
+  const [step, setStep] = useState<typeof STEPS.EMAIL | typeof STEPS.PASSWORD>(STEPS.EMAIL)
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -56,9 +65,9 @@ export default function ForgotPasswordScreen() {
             },
           },
         ],
-        'plain-text',
+        ALERT_PROMPT_TYPE,
         '',
-        'numeric'
+        ALERT_KEYBOARD_TYPE
       )
     } catch (err: any) {
       setError(err.message || t('forgotPassword.error'))
@@ -73,7 +82,7 @@ export default function ForgotPasswordScreen() {
     try {
       await verifyResetCode(email, inputCode)
       setCode(inputCode)
-      setStep('password')
+      setStep(STEPS.PASSWORD)
     } catch (err: any) {
       Alert.alert(
         t('common.error'),
@@ -95,7 +104,7 @@ export default function ForgotPasswordScreen() {
       return
     }
 
-    if (newPassword.length < 8) {
+    if (newPassword.length < PASSWORD_MIN_LENGTH) {
       setError(t('forgotPassword.passwordTooShort'))
       return
     }
@@ -123,8 +132,8 @@ export default function ForgotPasswordScreen() {
   }
 
   const handleBack = () => {
-    if (step === 'password') {
-      setStep('email')
+    if (step === STEPS.PASSWORD) {
+      setStep(STEPS.EMAIL)
       setError(null)
       setCode('')
       setNewPassword('')
@@ -146,13 +155,13 @@ export default function ForgotPasswordScreen() {
         <View className="items-center mb-8">
           <BaseLogo className="mb-6" />
           <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {step === 'email'
+            {step === STEPS.EMAIL
               ? t('forgotPassword.whatsYourEmail')
               : t('forgotPassword.newPassword')}
           </Text>
         </View>
 
-        {step === 'email' ? (
+        {step === STEPS.EMAIL ? (
           <>
             <BaseInput
               placeholder={t('forgotPassword.email')}

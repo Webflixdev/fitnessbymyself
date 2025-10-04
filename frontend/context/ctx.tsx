@@ -1,6 +1,7 @@
 import { use, createContext, type PropsWithChildren } from 'react'
 import { signIn, signUp, signOut } from '@/services/authService'
 import { useStorageState } from './useStorageState'
+import * as SecureStore from 'expo-secure-store'
 import type { CreateUserDto } from '@shared/types/user.types'
 
 const AuthContext = createContext<{
@@ -28,11 +29,24 @@ export function useSession() {
 }
 
 export function SessionProvider({ children }: PropsWithChildren) {
-  const [[isLoading, session], setSession] = useStorageState('session')
+  const [[isLoading, session], setSession] = useStorageState('accessToken')
+
   const logginUser = async (email: string, password: string) => {
-    const { accessToken } = await signIn(email, password)
+    const { accessToken, refreshToken } = await signIn(email, password)
+    // Save both tokens
+    await SecureStore.setItemAsync('accessToken', accessToken)
+    await SecureStore.setItemAsync('refreshToken', refreshToken)
     setSession(accessToken)
   }
+
+  const registerUser = async (userData: CreateUserDto) => {
+    const { accessToken, refreshToken } = await signUp(userData)
+    // Save both tokens
+    await SecureStore.setItemAsync('accessToken', accessToken)
+    await SecureStore.setItemAsync('refreshToken', refreshToken)
+    setSession(accessToken)
+  }
+
   return (
     <AuthContext
       value={{
@@ -40,10 +54,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
           await logginUser(email, password)
         },
         signUp: async (userData: CreateUserDto) => {
-          await signUp(userData)
+          await registerUser(userData)
         },
         signOut: async () => {
           await signOut()
+          await SecureStore.deleteItemAsync('accessToken')
+          await SecureStore.deleteItemAsync('refreshToken')
           setSession(null)
         },
         session,

@@ -77,7 +77,6 @@ export class AuthService {
   }
 
   async logout(userId: number): Promise<boolean> {
-    // Al hacer logout, simplemente borramos el hash del refresh token
     await this.prisma.user.updateMany({
       where: {
         id: userId,
@@ -139,12 +138,10 @@ export class AuthService {
       },
     })
 
-    // Enviar email con el código de recuperación
     try {
       await this.emailService.sendPasswordResetCode(dto.email, resetCode, lang)
     } catch (error) {
       console.error('Error sending reset email:', error)
-      // No revelamos el error al cliente por seguridad
     }
 
     return {
