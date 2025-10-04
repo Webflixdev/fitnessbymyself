@@ -48,6 +48,13 @@ api.interceptors.response.use(
         await SecureStore.deleteItemAsync('session')
       }
 
+      // Handle validation errors (400)
+      if (status === 400 && Array.isArray(data.message)) {
+        // NestJS validation errors come as an array
+        const errorMessage = data.message[0]
+        throw new Error(errorMessage)
+      }
+
       throw new Error(data.message || `Error ${status}: ${error.message}`)
     } else if (error.request) {
       throw new Error(i18n.t('errors.noResponse'))
